@@ -1,50 +1,61 @@
 package com.github.mixinmatch.appointments.Controllers;
 
-import com.github.mixinmatch.appointments.databases.CatalogRepo;
 import com.github.mixinmatch.appointments.models.Item;
+import com.microsoft.azure.functions.*;
+import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.BindingName;
+import com.microsoft.azure.functions.annotation.FunctionName;
+import com.microsoft.azure.functions.annotation.HttpTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.cloud.function.context.FunctionCatalog;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-@RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@Component
 public class Controller {
+
     @Autowired
-    private CatalogRepo catalogRepo;
+    private FunctionCatalog functionCatalog;
 
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("ok!");
+    @FunctionName("Health")
+    public HttpResponseMessage run(
+            @HttpTrigger(name ="request", methods = {HttpMethod.GET}, route = "health", authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
+                                   ExecutionContext executionContext) {
+        Supplier<String> fn = functionCatalog.lookup(Supplier.class, "Health");
+        return request.createResponseBuilder(HttpStatus.OK)
+                .body(fn.get())
+                .header("Content-Type", "application/json")
+                .build();
     }
 
-    @GetMapping("/item/{uuid}")
-    public ResponseEntity<Item> getItem(@PathVariable("uuid") String itemId) {
-        if (itemId == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        UUID id;
-        try {
-            id = UUID.fromString(itemId);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(catalogRepo.getItem(id));
+
+    @FunctionName("GetItems")
+    public HttpResponseMessage run2(
+            @HttpTrigger(name="request", methods = {HttpMethod.GET}, route="items", authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
+            ExecutionContext executionContext
+        ) {
+        Supplier<Collection<Item>> fn = functionCatalog.lookup(Supplier.class, "GetItems");
+
+        return request.createResponseBuilder(HttpStatus.OK)
+                .body(fn.get())
+                .header("Content-Type", "application/json")
+                .build();
     }
 
-    @GetMapping("/items")
-    public ResponseEntity<Collection<Item>> getItems() {
-        return ResponseEntity.status(HttpStatus.OK).body(catalogRepo.getItems());
-    }
-    @PutMapping("/items/{uuid}")
-    public ResponseEntity<Collection<Item>> setLiquidationStatus(
-            @PathVariable("uuid") String itemId,
-            @RequestBody Status status
-            ) {
-        catalogRepo.setLiquidation(UUID.fromString(itemId), status.isLiquidationStatus());
-        return ResponseEntity.ok().build();
+    @FunctionName("GetItem")
+    public HttpResponseMessage run3(
+            @HttpTrigger(name="request", methods = {HttpMethod.GET}, route="item/{uuid}", authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
+            @BindingName("uuid") String uuid,
+            ExecutionContext executionContext
+    ) {
+        Function<String, String> bean = functionCatalog.lookup(Function.class, "GetItem");
+        return request.createResponseBuilder(HttpStatus.OK)
+                .body(bean.apply(uuid))
+                .header("Content-Type", "application/json")
+                .build();
     }
 }
