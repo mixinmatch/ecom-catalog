@@ -24,7 +24,7 @@
                 <groupId>com.microsoft.azure</groupId>
                 <artifactId>azure-functions-maven-plugin</artifactId>
                 <configuration>
-                    <appName>catalog</appName>
+                    <appName>ecom-catalog</appName>
                     <appSettings>
                         <property>
                             <name>FUNCTIONS_WORKER_RUNTIME</name>
