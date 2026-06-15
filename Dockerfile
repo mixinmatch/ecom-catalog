@@ -21,3 +21,4 @@ ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
   AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 ###
 COPY --from=installer-env ["/build/target/azure-functions/ecom-catalog", "/home/site/wwwroot"]
+EXPOSE 8080
