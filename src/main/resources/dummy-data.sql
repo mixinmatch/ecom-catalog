@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS inventory;
+
 CREATE TABLE IF NOT EXISTS CATALOG (
 id uuid PRIMARY KEY,
 name varchar(256),
