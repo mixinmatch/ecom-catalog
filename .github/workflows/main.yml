@@ -23,4 +23,4 @@ jobs:
           appSourcePath: ${{ github.workspace }}
           acrName: ecomreg
           containerAppName: catalog-2
-          resourceGroup: my-container-app-rg
+          resourceGroup: ecom
