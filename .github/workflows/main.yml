@@ -21,6 +21,6 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           appSourcePath: ${{ github.workspace }}
-          acrName: ecom
+          acrName: ecomreg
           containerAppName: catalog-2
           resourceGroup: my-container-app-rg
