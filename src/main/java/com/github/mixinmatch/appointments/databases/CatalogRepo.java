@@ -24,7 +24,7 @@ public class CatalogRepo {
 
         return namedTemplate.query("""
                         SELECT *
-                        FROM CATALOG
+                        FROM catalog.CATALOG
                         WHERE id = :id
                         """,
                 params,
@@ -48,7 +48,7 @@ public class CatalogRepo {
 
         return namedTemplate.query("""
                         SELECT *
-                        FROM CATALOG
+                        FROM catalog.CATALOG
                         """,
                 params,
                 rs -> {
@@ -74,7 +74,7 @@ public class CatalogRepo {
         params.addValue("liquidation", isLiquidation);
 
         namedTemplate.update("""
-                        UPDATE CATALOG
+                        UPDATE catalog.CATALOG
                         SET isLiquidationSale = :liquidation
                         WHERE id = :id
                         """,
