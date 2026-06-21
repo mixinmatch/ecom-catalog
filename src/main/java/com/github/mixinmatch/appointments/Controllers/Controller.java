@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.function.context.FunctionCatalog;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -65,9 +63,11 @@ public class Controller {
 
 
         Supplier<Collection<Item>> fn = functionCatalog.lookup(Supplier.class, "GetItems");
+        List<Item> items = new ArrayList<>(fn.get());
+        items.sort(Comparator.comparing(Item::name));
 
         return request.createResponseBuilder(HttpStatus.OK)
-                .body(fn.get())
+                .body(items)
                 .header("Content-Type", "application/json")
                 .build();
     }
