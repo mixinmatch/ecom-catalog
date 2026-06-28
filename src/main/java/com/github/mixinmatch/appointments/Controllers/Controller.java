@@ -64,7 +64,7 @@ public class Controller {
 
         Supplier<Collection<Item>> fn = functionCatalog.lookup(Supplier.class, "GetItems");
         List<Item> items = new ArrayList<>(fn.get());
-        items.sort(Comparator.comparing(Item::name));
+        items.sort(Comparator.comparing(Item::getName));
 
         return request.createResponseBuilder(HttpStatus.OK)
                 .body(items)

@@ -1,6 +1,6 @@
-CREATE SCHEMA IF NOT EXISTS inventory;
+CREATE SCHEMA IF NOT EXISTS catalog;
 
-CREATE TABLE IF NOT EXISTS CATALOG (
+CREATE TABLE IF NOT EXISTS catalog.CATALOG (
 id uuid PRIMARY KEY,
 name varchar(256),
 merchant varchar(256),
@@ -9,7 +9,7 @@ photo varchar(256),
 isLiquidationSale boolean DEFAULT FALSE
 );
 
-INSERT INTO CATALOG
+INSERT INTO catalog.CATALOG
 (id, name, merchant, merchantId, photo)
 VALUES
 ('9de0ee75-8e4e-4e12-93b2-0c6cc15175f6', 'Cozyjak', 'Bootlegciaga', '29cd34a6-5d5b-4e25-8c3f-66bec1298cc4', '/images/coat.jpg'),
